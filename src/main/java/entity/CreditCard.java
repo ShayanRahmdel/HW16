@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Setter
@@ -13,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Card extends BaseEntity<Integer> {
+public class CreditCard extends BaseEntity<Integer> {
     @Column(nullable = false,unique = true,length = 16)
     private String cardNumber;
 
