@@ -1,6 +1,5 @@
 package entity;
 
-import base.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,7 +44,7 @@ public class Student extends Person {
     private String address;
 
     @OneToMany(mappedBy = "student")
-    private List<Card> card;
+    private List<CreditCard> creditCards;
 
 
     @OneToMany(mappedBy = "student")
