@@ -11,8 +11,10 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+
 public class CreditCard extends BaseEntity<Integer> {
+
+    private Double balance;
     @Column(nullable = false,unique = true,length = 16)
     private String cardNumber;
 
@@ -27,4 +29,22 @@ public class CreditCard extends BaseEntity<Integer> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
+
+    public CreditCard(String cardNumber, String cvv2, Date expiretionDate, Bank bankName, Student student) {
+        this.cardNumber = cardNumber;
+        this.cvv2 = cvv2;
+        this.expiretionDate = expiretionDate;
+        this.bankName = bankName;
+        this.student = student;
+    }
+
+    @Override
+    public String toString() {
+        return "Your CreditCards" +"\n"+
+                "cardNumber=====> " + cardNumber + "\n" +
+                "cvv2===========> " + cvv2 + "\n" +
+                "expiretionDate=> " + expiretionDate +"\n"+
+                "bankName=======> " + bankName+"\n"+
+                "=================================";
+    }
 }
