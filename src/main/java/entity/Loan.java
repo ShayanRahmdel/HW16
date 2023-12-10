@@ -3,10 +3,8 @@ package entity;
 import base.entity.BaseEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,8 +15,9 @@ import java.util.List;
 @ToString
 public class Loan extends BaseEntity<Integer> {
     private Double amount;
-    private TypeLoan typeLoan;
     private Integer houseTrackingCode;
+    @Temporal(TemporalType.DATE)
+    private Date dateofRegistration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private LoanCategory loanCategory;
@@ -29,4 +28,11 @@ public class Loan extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "loan")
     private List<Installment> installments;
 
+    public Loan(Double amount, Integer houseTrackingCode, Date dateofRegistration, LoanCategory loanCategory, Student student) {
+        this.amount = amount;
+        this.houseTrackingCode = houseTrackingCode;
+        this.dateofRegistration = dateofRegistration;
+        this.loanCategory = loanCategory;
+        this.student = student;
+    }
 }
