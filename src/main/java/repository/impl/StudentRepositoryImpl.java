@@ -5,6 +5,7 @@ import entity.Student;
 import repository.StudentRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 public class StudentRepositoryImpl extends BaseEntityRepositoryImpl<Student,Integer>
         implements StudentRepository {
@@ -15,5 +16,14 @@ public class StudentRepositoryImpl extends BaseEntityRepositoryImpl<Student,Inte
     @Override
     public Class<Student> getEntityClass() {
         return Student.class;
+    }
+
+    @Override
+    public Student findByUserAndPassword(String userName, String password) {
+        String hql="SELECT s from Student s WHERE userName= :userName and Password= :password";
+        TypedQuery<Student> query = entityManager.createQuery(hql, Student.class);
+        query.setParameter("userName",userName);
+        query.setParameter("password",password);
+        return query.getSingleResult();
     }
 }

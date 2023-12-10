@@ -10,4 +10,9 @@ public class StudentServiceImpl extends BaseEntityServiceImpl<Student,Integer,
     public StudentServiceImpl(StudentRepository repository) {
         super(repository);
     }
+
+    @Override
+    public Student findByUserNameAndPassword(String userName, String password) {
+        return repository.findByUserAndPassword(userName,password);
+    }
 }
