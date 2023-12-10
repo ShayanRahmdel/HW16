@@ -16,9 +16,17 @@ public class LoanCategory extends BaseEntity<Integer> {
     @Enumerated(value = EnumType.STRING)
     private TypeLoan typeLoan;
 
-    @Column(nullable = false)
-    private Double amount;
+
 
     @OneToMany(mappedBy = "loanCategory")
     private List<Loan> loan;
+
+    public LoanCategory(TypeLoan typeLoan) {
+        this.typeLoan = typeLoan;
+
+    }
+
+    public LoanCategory(Integer integer) {
+        super(integer);
+    }
 }
