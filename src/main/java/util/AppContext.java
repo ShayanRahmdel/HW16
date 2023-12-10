@@ -1,5 +1,6 @@
 package util;
 
+import entity.CreditCard;
 import repository.*;
 import repository.impl.*;
 import service.*;
@@ -52,5 +53,19 @@ public class AppContext {
 
     public static StudentService getStudentService() {
         return STUDENT_SERVICE;
+    }
+
+    public static CreditCardService getCreditCardService(){
+        return CREDIT_CARD_SERVICE;
+    }
+    public static LoanService getLoanService(){
+        return LOAN_SERVICE;
+    }
+
+    public static InstallmentService getInstallmentService(){
+        return INSTALLMENT_SERVICE;
+    }
+    public static StudentSpouseService getStudentSpouseService(){
+        return STUDENT_SPOUSE_SERVICE;
     }
 }
