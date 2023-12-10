@@ -9,6 +9,7 @@ import javax.validation.ConstraintViolation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 public class SignUpStudent {
@@ -27,7 +28,7 @@ public class SignUpStudent {
         System.out.println("Enter National Code:");
         String nationalCode = Validate.nationalCodeValidation();
         Date brithDay = getBrithDay();
-        System.out.println("Enter Your Student NUmber:");
+        System.out.println("Enter Your Student Number:");
         String studentNumber = GiveInput.giveStringInput();
         System.out.println("Enter Your Entry Year:");
         Integer entryYear = GiveInput.giveIntegerInput();
@@ -56,6 +57,9 @@ public class SignUpStudent {
         validation(student);
 
 
+
+
+
     }
 
     private static Grade chooseGrade() {
@@ -75,6 +79,8 @@ public class SignUpStudent {
             AppContext.getStudentService().saveOrUpdate(student);
             System.out.println("Your user name : " + student.getUserName());
             System.out.println("Your Password is : "+ student.getPassword() );
+            StudentMenu studentMenu = new StudentMenu();
+            studentMenu.menu(student);
         } else {
             for (ConstraintViolation<Student> violation : violations) {
                 System.out.println(violation.getPropertyPath() + ": " + violation.getMessage());
