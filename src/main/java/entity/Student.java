@@ -30,7 +30,7 @@ public class Student extends Person {
     @Enumerated(value = EnumType.STRING)
     private TypeOfUniversity typeOfUniversity;
 
-    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = true)
     private TypeStateUni typeStateUni;
 
     @Column(unique = true,length = 10,nullable = false)
@@ -60,6 +60,9 @@ public class Student extends Person {
         this.grade = grade;
     }
 
+    public Student(Integer id){
+        this.setId(id);
+    }
 
 
 }
