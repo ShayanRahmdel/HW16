@@ -5,4 +5,5 @@ import base.service.BaseService;
 import entity.Loan;
 
 public interface LoanService extends BaseService<Loan,Integer> {
+    Integer typeLoanCategoryByStudentId(Integer studentId);
 }

@@ -11,4 +11,10 @@ public class LoanServiceImpl extends BaseEntityServiceImpl<Loan,Integer,LoanRepo
     public LoanServiceImpl(LoanRepository repository) {
         super(repository);
     }
+
+
+    @Override
+    public Integer typeLoanCategoryByStudentId(Integer studentId) {
+        return repository.typeLoanCategoryByStudentId(studentId);
+    }
 }
