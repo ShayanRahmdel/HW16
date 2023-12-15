@@ -1,6 +1,9 @@
-package util;
+package menu;
 
 import entity.*;
+import util.AppContext;
+import util.GiveInput;
+import util.Validate;
 
 import javax.validation.ConstraintViolation;
 import java.text.ParseException;
@@ -10,7 +13,11 @@ import java.util.Set;
 
 public class SignUpLoan {
     Tuition tuition = new Tuition();
-    private Loan loan=new Loan();
+
+    Housing housing = new Housing();
+    Educational educational = new Educational();
+    private Loan loan = new Loan();
+
     public void menu(Student student) {
 
         Boolean flag = true;
@@ -25,41 +32,12 @@ public class SignUpLoan {
             switch (select) {
                 case 1 -> getCreditInfo(student);
                 case 2 -> tuition.tuitionLoan(student);
-                case 3 -> educationalLoan(student);
-                case 4 -> housingLoan(student);
-                case 5 ->flag=false;
+                case 3 -> educational.educationalLoan(student);
+                case 4 -> housing.housingLoan(student);
+                case 5 -> flag = false;
                 default -> System.out.println("Wrong");
             }
         }
-    }
-
-
-
-
-    private void educationalLoan(Student student) {
-        System.out.print("Enter Today date (format: dd/MM/yyyy): ");
-        Date date = getDate();
-        if (checkDateFirstTerm(date)) {
-            System.out.println("You Can sign for Loan");
-        } else {
-            System.out.println("You cant sign for Loan in this Date");
-        }
-
-
-    }
-
-    private void housingLoan(Student student) {
-        System.out.print("Enter Today date (format: dd/MM/yyyy): ");
-        Date date = getDate();
-        if (checkDateFirstTerm(date)) {
-            System.out.println("You Can sign for Loan");
-            getCreditInfo(student);
-
-        } else {
-            System.out.println("You cant sign for Loan in this Date");
-        }
-
-
     }
 
 
