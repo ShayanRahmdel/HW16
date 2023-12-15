@@ -5,4 +5,5 @@ import base.service.BaseService;
 import entity.StudentSpouse;
 
 public interface StudentSpouseService extends BaseService<StudentSpouse,Integer> {
+    Boolean isSpouseStudent(Integer studentId);
 }

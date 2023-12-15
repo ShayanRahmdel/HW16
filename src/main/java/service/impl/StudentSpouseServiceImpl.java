@@ -12,4 +12,8 @@ public class StudentSpouseServiceImpl extends BaseEntityServiceImpl<StudentSpous
     }
 
 
+    @Override
+    public Boolean isSpouseStudent(Integer studentId) {
+        return repository.isSpouseIsStudent(studentId);
+    }
 }
