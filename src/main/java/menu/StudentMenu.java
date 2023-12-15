@@ -1,6 +1,8 @@
-package util;
+package menu;
 
 import entity.Student;
+import menu.SignUpLoan;
+import util.GiveInput;
 
 public class StudentMenu {
     SignUpLoan signUpLoan = new SignUpLoan();
