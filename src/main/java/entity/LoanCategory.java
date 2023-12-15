@@ -13,6 +13,8 @@ import java.util.List;
 @Setter
 @ToString
 public class LoanCategory extends BaseEntity<Integer> {
+    private Double amount;
+
     @Enumerated(value = EnumType.STRING)
     private TypeLoan typeLoan;
 
