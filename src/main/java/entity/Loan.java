@@ -14,8 +14,9 @@ import java.util.List;
 @Setter
 @ToString
 public class Loan extends BaseEntity<Integer> {
-    private Double amount;
+
     private Integer houseTrackingCode;
+
     @Temporal(TemporalType.DATE)
     private Date dateofRegistration;
 
@@ -28,8 +29,8 @@ public class Loan extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "loan")
     private List<Installment> installments;
 
-    public Loan(Double amount, Integer houseTrackingCode, Date dateofRegistration, LoanCategory loanCategory, Student student) {
-        this.amount = amount;
+    public Loan(Integer houseTrackingCode, Date dateofRegistration, LoanCategory loanCategory, Student student) {
+
         this.houseTrackingCode = houseTrackingCode;
         this.dateofRegistration = dateofRegistration;
         this.loanCategory = loanCategory;
