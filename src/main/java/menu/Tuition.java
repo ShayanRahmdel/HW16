@@ -1,10 +1,14 @@
-package util;
+package menu;
 
 import entity.*;
+import util.AppContext;
+import util.GiveInput;
+import util.Validate;
 
 import javax.validation.ConstraintViolation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -29,25 +33,23 @@ public class Tuition {
             }
             if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.Associate) || student.getGrade().equals(Grade.Bachelor_Continuous) ||
                     student.getGrade().equals(Grade.Bachelor_Discontinuous)) {
-                LoanCategory loanCategory = new LoanCategory(3);
-                loan = new Loan(1300000.0, null, date, loanCategory, student);
+                LoanCategory loanCategory = new LoanCategory(9);
+                loan = new Loan( null, date, loanCategory, student);
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(1300000.0, bank1, student.getId());
             }
             if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.Masters_Continuous) || student.getGrade().equals(Grade.Masters_Discontinuous) ||
                     student.getGrade().equals(Grade.PHD_professional) || student.getGrade().equals(Grade.PHD_Continuous)) {
-                LoanCategory loanCategory = new LoanCategory(3);
-                loan = new Loan(2600000.0, null, date, loanCategory, student);
+                LoanCategory loanCategory = new LoanCategory(8);
+                loan = new Loan( null, date, loanCategory, student);
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(2600000.0, bank1, student.getId());
             }
             if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.PHD_Discontinuous)) {
-                LoanCategory loanCategory = new LoanCategory(3);
-                loan = new Loan(65000000.0, null, date, loanCategory, student);
+                LoanCategory loanCategory = new LoanCategory(7);
+                loan = new Loan( null, date, loanCategory, student);
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(65000000.0, bank1, student.getId());
-            }else {
-                System.out.println("Maybe Your State is wrong");
             }
 
         } else {
@@ -103,4 +105,20 @@ public class Tuition {
                 typeOfUniversity == TypeOfUniversity.Applied_Science||
                 typeStateUni==TypeStateUni.Shabane;
     }
+
+    public static boolean checkDateSecondTerm(Date date) {
+        int year = date.getYear() + 1900;
+        int month = date.getMonth() + 1;
+        int day = date.getDate();
+
+        if (month == 2 && day >= 25 && day <= 31 && year >= 1000 ||
+                month == 3 && day >= 1 && day <= 2 && year >= 1000) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
+
