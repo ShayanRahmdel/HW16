@@ -43,6 +43,8 @@ public class Student extends Person {
 
     private String address;
 
+    private String cityOfUniversity;
+
     @OneToMany(mappedBy = "student")
     private List<CreditCard> creditCards;
 
@@ -50,14 +52,16 @@ public class Student extends Person {
     @OneToMany(mappedBy = "student")
     private List<Loan> loans;
 
-    public Student(String firstName, String lastName, String fathersName, String mothersName, String idNumber, String nationalNumber, Date dob, String studentNumber, Integer yearOfEntry, String universityName, TypeOfUniversity typeOfUniversity, TypeStateUni typeStateUni, Grade grade) {
+    public Student(String firstName, String lastName, String fathersName, String mothersName, String idNumber, String nationalNumber, Date dob, String studentNumber, Integer yearOfEntry, String universityName,String cityOfUniversity, TypeOfUniversity typeOfUniversity, TypeStateUni typeStateUni, Grade grade,String address) {
         super(firstName, lastName, fathersName, mothersName, idNumber, nationalNumber, dob);
         this.studentNumber = studentNumber;
         this.yearOfEntry = yearOfEntry;
         this.universityName = universityName;
+        this.cityOfUniversity=cityOfUniversity;
         this.typeOfUniversity = typeOfUniversity;
         this.typeStateUni = typeStateUni;
         this.grade = grade;
+        this.setAddress(address);
     }
 
     public Student(Integer id){
