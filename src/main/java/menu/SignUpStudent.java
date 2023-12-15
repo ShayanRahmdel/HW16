@@ -1,15 +1,19 @@
-package util;
+package menu;
 
 import entity.Grade;
 import entity.Student;
 import entity.TypeOfUniversity;
 import entity.TypeStateUni;
+import menu.StudentMenu;
+import util.AppContext;
+import util.GenerateRandomPassword;
+import util.GiveInput;
+import util.Validate;
 
 import javax.validation.ConstraintViolation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 public class SignUpStudent {
@@ -34,6 +38,8 @@ public class SignUpStudent {
         Integer entryYear = GiveInput.giveIntegerInput();
         System.out.println("Enter Your University Name:");
         String universityName = GiveInput.giveStringInput();
+        System.out.println("Enter City of University:");
+        String cityOfUniversity = GiveInput.giveStringInput();
         TypeOfUniversity typeOfUniversity = typeOfuniversityMethod();
         TypeStateUni typeStateUni = null;
         if (typeOfUniversity.equals(TypeOfUniversity.State)) {
@@ -51,7 +57,9 @@ public class SignUpStudent {
                 "    PHD_Continuous,\n" +
                 "    PHD_Discontinuous");
         Grade grade = chooseGrade();
-        Student student = new Student(firstName, lastName, fathersName, mothersName, idNumber, nationalCode, brithDay, studentNumber, entryYear, universityName, typeOfUniversity, typeStateUni,grade);
+        System.out.println("Enter Address in this format 'State/city/street/...");
+        String address = GiveInput.giveStringInput();
+        Student student = new Student(firstName, lastName, fathersName, mothersName, idNumber, nationalCode, brithDay, studentNumber, entryYear, universityName,cityOfUniversity, typeOfUniversity, typeStateUni,grade,address);
         student.setUserName(student.getNationalNumber());
         student.setPassword(GenerateRandomPassword.generateRandomPassword());
         validation(student);
