@@ -74,6 +74,13 @@
             <version>2.2.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.eloyzone</groupId>
+            <artifactId>jalali-calendar</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>
