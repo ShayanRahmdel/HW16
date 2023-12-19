@@ -5,14 +5,15 @@ import entity.Student;
 import entity.TypeOfUniversity;
 import entity.TypeStateUni;
 import menu.StudentMenu;
-import util.AppContext;
-import util.GenerateRandomPassword;
-import util.GiveInput;
-import util.Validate;
+import util.*;
 
 import javax.validation.ConstraintViolation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Set;
 
@@ -31,11 +32,12 @@ public class SignUpStudent {
         String idNumber = Validate.nationalCodeValidation();
         System.out.println("Enter National Code:");
         String nationalCode = Validate.nationalCodeValidation();
-        Date brithDay = getBrithDay();
+        System.out.print("Enter a Birthday date (format: dd/MM/yyyy): ");
+        LocalDate brithDay = getDay();
         System.out.println("Enter Your Student Number:");
         String studentNumber = GiveInput.giveStringInput();
         System.out.println("Enter Your Entry Year:");
-        Integer entryYear = GiveInput.giveIntegerInput();
+        LocalDate entryYear = getDay();
         System.out.println("Enter Your University Name:");
         String universityName = GiveInput.giveStringInput();
         System.out.println("Enter City of University:");
@@ -63,6 +65,7 @@ public class SignUpStudent {
         student.setUserName(student.getNationalNumber());
         student.setPassword(GenerateRandomPassword.generateRandomPassword());
         validation(student);
+        SecurityContext.fillContext(student);
 
 
 
@@ -88,7 +91,7 @@ public class SignUpStudent {
             System.out.println("Your user name : " + student.getUserName());
             System.out.println("Your Password is : "+ student.getPassword() );
             StudentMenu studentMenu = new StudentMenu();
-            studentMenu.menu(student);
+            studentMenu.menu();
         } else {
             for (ConstraintViolation<Student> violation : violations) {
                 System.out.println(violation.getPropertyPath() + ": " + violation.getMessage());
@@ -121,15 +124,16 @@ public class SignUpStudent {
         return typeOfUniversity1;
     }
 
-    private static Date getBrithDay() {
-        System.out.print("Enter a date (format: dd/MM/yyyy): ");
+    private static LocalDate getDay() {
+        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+
         String dob = GiveInput.giveStringInput();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
+        LocalDate date = null;
         try {
-            date = dateFormat.parse(dob);
+            date = LocalDate.parse(dob, DATE_FORMATTER);
             System.out.println("Parsed date: " + date);
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             System.out.println("Invalid date format. Please enter a date in the format dd/MM/yyyy.");
         }
         return date;

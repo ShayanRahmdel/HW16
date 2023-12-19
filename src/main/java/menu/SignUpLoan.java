@@ -1,13 +1,17 @@
 package menu;
 
+import com.github.eloyzone.jalalicalendar.DateConverter;
+import com.github.eloyzone.jalalicalendar.JalaliDate;
 import entity.*;
 import util.AppContext;
 import util.GiveInput;
+import util.SecurityContext;
 import util.Validate;
 
 import javax.validation.ConstraintViolation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,26 +21,43 @@ public class SignUpLoan {
     Housing housing = new Housing();
     Educational educational = new Educational();
     private Loan loan = new Loan();
+    DateConverter dateConverter = new DateConverter();
 
-    public void menu(Student student) {
+    public void menu() {
+        System.out.print("Enter Today date (format: yyyy/mm/dd): ");
+        String date = GiveInput.giveStringInput();
+        String[] split = date.split("/");
+        int year = Integer.parseInt(split[0]);
+        int month = Integer.parseInt(split[1]);
+        int day = Integer.parseInt(split[2]);
+        JalaliDate jalaliDate = new JalaliDate(year, month, day);
+        if (month == 7 && day >= 1 && day <= 8 ||
+                month == 11 && day >= 25 || month == 12 && day <= 2) {
+            System.out.println(true);
+            LocalDate gregorianDate = dateConverter.jalaliToGregorian(jalaliDate);
+            SecurityContext.fillContext(gregorianDate);
 
-        Boolean flag = true;
-        Integer select = 0;
-        while (flag) {
-            System.out.println("1_ADD Your Creditcard:");
-            System.out.println("2_TuitionLoan");
-            System.out.println("3_EducationLoan");
-            System.out.println("4_HousingLoan");
-            System.out.println("5_Exit");
-            select = GiveInput.giveIntegerInput();
-            switch (select) {
-                case 1 -> getCreditInfo(student);
-                case 2 -> tuition.tuitionLoan(student);
-                case 3 -> educational.educationalLoan(student);
-                case 4 -> housing.housingLoan(student);
-                case 5 -> flag = false;
-                default -> System.out.println("Wrong");
+            Boolean flag = true;
+            Integer select = 0;
+            while (flag) {
+                System.out.println("1_ADD Your Creditcard:");
+                System.out.println("2_TuitionLoan");
+                System.out.println("3_EducationLoan");
+                System.out.println("4_HousingLoan");
+                System.out.println("5_Exit");
+                select = GiveInput.giveIntegerInput();
+                switch (select) {
+                    case 1 -> getCreditInfo();
+                    case 2 -> tuition.tuitionLoan();
+                    case 3 -> educational.educationalLoan();
+                    case 4 -> housing.housingLoan();
+                    case 5 -> flag = false;
+                    default -> System.out.println("Wrong");
+                }
             }
+
+        } else {
+            System.out.println("You cannot create a loan on this date");
         }
     }
 
@@ -69,7 +90,8 @@ public class SignUpLoan {
     }
 
 
-    private void getCreditInfo(Student student) {
+    private void getCreditInfo() {
+        Student student = SecurityContext.getStudent();
         System.out.println("Enter your CreditCard Number ");
         String creditNummber = GiveInput.giveStringInput();
         System.out.println("Enter Your cvv2:");
