@@ -1,7 +1,7 @@
 package repository;
 
 import base.repository.BaseEntityRepository;
-import entity.Installment;
+import entity.PayInstallment;
 
-public interface InstallmentRepository extends BaseEntityRepository<Installment,Integer> {
+public interface InstallmentRepository extends BaseEntityRepository<PayInstallment,Integer> {
 }

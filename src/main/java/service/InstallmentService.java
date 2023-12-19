@@ -1,8 +1,19 @@
 package service;
 
-import base.repository.BaseEntityRepository;
 import base.service.BaseService;
-import entity.Installment;
+import entity.PayInstallment;
+import entity.Student;
 
-public interface InstallmentService extends BaseService<Installment,Integer> {
+import java.time.LocalDate;
+import java.util.List;
+
+public interface InstallmentService extends BaseService<PayInstallment,Integer> {
+
+
+
+    public List<LocalDate> tuition9 (Student student);
+
+    public List<Double> calculateTuition9();
 }
+
+
