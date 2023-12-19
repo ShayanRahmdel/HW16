@@ -3,86 +3,103 @@ package menu;
 import entity.*;
 import util.AppContext;
 import util.GiveInput;
+import util.SecurityContext;
 import util.Validate;
 
 import javax.validation.ConstraintViolation;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Tuition {
     Loan loan = new Loan();
-    public void tuitionLoan(Student student) {
-        System.out.print("Enter Today date (format: dd/MM/yyyy): ");
-        Date date = getDate();
-        if (checkDateFirstTerm(date)) {
-            System.out.println("You Can sign for Loan");
-            System.out.println("Which bank want get Loan?\n Meli,\n" +
-                    "    Refah,\n" +
-                    "    Tejarat,\n" +
-                    "    Maskan");
-            System.out.println(AppContext.getCreditCardService().findCreditById(student.getId()));
-            String bank = GiveInput.giveStringInput();
-            Bank bank1 = null;
-            try {
-                bank1 = Bank.valueOf(bank);
-            } catch (IllegalArgumentException e) {
-                System.out.println("enter valid bank");
-            }
-            if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.Associate) || student.getGrade().equals(Grade.Bachelor_Continuous) ||
-                    student.getGrade().equals(Grade.Bachelor_Discontinuous)) {
-                LoanCategory loanCategory = new LoanCategory(9);
-                loan = new Loan( null, date, loanCategory, student);
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(1300000.0, bank1, student.getId());
-            }
-            if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.Masters_Continuous) || student.getGrade().equals(Grade.Masters_Discontinuous) ||
-                    student.getGrade().equals(Grade.PHD_professional) || student.getGrade().equals(Grade.PHD_Continuous)) {
-                LoanCategory loanCategory = new LoanCategory(8);
-                loan = new Loan( null, date, loanCategory, student);
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(2600000.0, bank1, student.getId());
-            }
-            if (isUniversityTypeValid(student)&&student.getGrade().equals(Grade.PHD_Discontinuous)) {
-                LoanCategory loanCategory = new LoanCategory(7);
-                loan = new Loan( null, date, loanCategory, student);
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(65000000.0, bank1, student.getId());
-            }
 
-        } else {
-            System.out.println("You cant sign for Loan in this Date");
-        }
-    }
 
-    private static Date getDate() {
-        String dob = GiveInput.giveStringInput();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
+    public void tuitionLoan() {
+
+
+        System.out.println("You Can sign for Loan");
+        System.out.println("Which bank want get Loan?\n Meli,\n" +
+                "    Refah,\n" +
+                "    Tejarat,\n" +
+                "    Maskan");
+        System.out.println(AppContext.getCreditCardService().findCreditById(SecurityContext.getStudent().getId()));
+        String bank = GiveInput.giveStringInput();
+        Bank bank1 = null;
         try {
-            date = dateFormat.parse(dob);
-            System.out.println("Parsed date: " + date);
-        } catch (ParseException e) {
-            System.out.println("Invalid date format. Please enter a date in the format dd/MM/yyyy.");
+            bank1 = Bank.valueOf(bank);
+        } catch (IllegalArgumentException e) {
+            System.out.println("enter valid bank");
         }
-        return date;
+        if (!studentHasActiveLoan(SecurityContext.getStudent(), SecurityContext.getTodayDate())) {
+            if (isUniversityTypeValid(SecurityContext.getStudent()) && SecurityContext.getStudent().getGrade().equals(Grade.Associate) || SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Continuous) ||
+                    SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Discontinuous)) {
+                LoanCategory loanCategory = new LoanCategory(9);
+                loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                validationLoan(loan);
+                AppContext.getCreditCardService().updateBalanceById(1300000.0, bank1, SecurityContext.getStudent().getId());
+                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 9) {
+
+
+                    Integer year = returnYear(SecurityContext.getStudent());
+                    createInstallment(1300000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                }
+
+            }
+            if (isUniversityTypeValid(SecurityContext.getStudent()) && SecurityContext.getStudent().getGrade().equals(Grade.Masters_Continuous) || SecurityContext.getStudent().getGrade().equals(Grade.Masters_Discontinuous) ||
+                    SecurityContext.getStudent().getGrade().equals(Grade.PHD_professional) || SecurityContext.getStudent().getGrade().equals(Grade.PHD_Continuous)) {
+                LoanCategory loanCategory = new LoanCategory(8);
+                loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                validationLoan(loan);
+                AppContext.getCreditCardService().updateBalanceById(2600000.0, bank1, SecurityContext.getStudent().getId());
+                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 8) {
+
+                    Integer year = returnYear(SecurityContext.getStudent());
+                    createInstallment(2600000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                }
+
+            }
+            if (isUniversityTypeValid(SecurityContext.getStudent()) && SecurityContext.getStudent().getGrade().equals(Grade.PHD_Discontinuous)) {
+                LoanCategory loanCategory = new LoanCategory(7);
+                loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                validationLoan(loan);
+                AppContext.getCreditCardService().updateBalanceById(65000000.0, bank1, SecurityContext.getStudent().getId());
+                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 7) {
+
+                    Integer year = returnYear(SecurityContext.getStudent());
+                    createInstallment(2600000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                }
+            }
+        } else System.out.println("You already have a loan");
+
+
+    }
+
+    private void createInstallment(Double loanAmount,Integer year) {
+        List<PayInstallment> installments=new ArrayList<>();
+        LocalDate repaymentDate = LocalDate.of(year,3,21);
+        double repayAmount = (loanAmount*4)/100 + loanAmount;
+        int count=1;
+        for (int i = 0;i<5;i++) {
+            double amount = (repayAmount/31)*Math.pow(2,i);
+            for(int j = 0;j<12;j++){
+                PayInstallment payInstallment = new PayInstallment();
+                payInstallment.setNumber(count++);
+                payInstallment.setAmount(amount/12);
+                payInstallment.setDueDate(repaymentDate);
+                payInstallment.setLoan(loan);
+                installments.add(payInstallment);
+                repaymentDate = repaymentDate.plusMonths(1);
+
+            }
+        }
+        for (PayInstallment ins:installments) {
+            AppContext.getInstallmentService().saveOrUpdate(ins);
+        }
     }
 
 
-    public static boolean checkDateFirstTerm(Date date) {
-
-        int year = date.getYear() + 1900;
-        int month = date.getMonth() + 1;
-        int day = date.getDate();
-
-        if (month == 11 && day >= 1 && day <= 7 && year >= 1000) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     private static void validationLoan(Loan loan) {
         Set<ConstraintViolation<Loan>> violations = Validate.validator.validate(loan);
         if (violations.isEmpty()) {
@@ -94,6 +111,7 @@ public class Tuition {
             }
         }
     }
+
     private Boolean isUniversityTypeValid(Student student) {
         TypeOfUniversity typeOfUniversity = student.getTypeOfUniversity();
         TypeStateUni typeStateUni = student.getTypeStateUni();
@@ -102,23 +120,36 @@ public class Tuition {
                 typeOfUniversity == TypeOfUniversity.Pardis ||
                 typeOfUniversity == TypeOfUniversity.Excess_capacity ||
                 typeOfUniversity == TypeOfUniversity.Payam_noor ||
-                typeOfUniversity == TypeOfUniversity.Applied_Science||
-                typeStateUni==TypeStateUni.Shabane;
+                typeOfUniversity == TypeOfUniversity.Applied_Science ||
+                typeStateUni == TypeStateUni.Shabane;
     }
 
-    public static boolean checkDateSecondTerm(Date date) {
-        int year = date.getYear() + 1900;
-        int month = date.getMonth() + 1;
-        int day = date.getDate();
 
-        if (month == 2 && day >= 25 && day <= 31 && year >= 1000 ||
-                month == 3 && day >= 1 && day <= 2 && year >= 1000) {
-            return true;
-        } else {
-            return false;
+    public static Boolean studentHasActiveLoan(Student student, LocalDate date) {
+        List<Loan> loans = student.getLoans();
+        if (!loans.isEmpty()) {
+            try {
+                for (Loan loan : loans) {
+                    if (loan.getLoanCategory().getTypeLoan().equals(TypeLoan.TuitionLoan) &&
+                            loan.getDateofRegistration().getYear() == date.getYear())
+                        return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-    }
 
+        return false;
+    }
+    private Integer returnYear(Student student){
+        if (student.getGrade().equals(Grade.Associate)||student.getGrade().equals(Grade.Masters_Discontinuous)){
+            return 2;
+        }if (student.getGrade().equals(Grade.Bachelor_Discontinuous)||student.getGrade().equals(Grade.Bachelor_Continuous)){
+            return 4;
+        }else if (student.getGrade().equals(Grade.Masters_Continuous)){
+            return 6;
+        }else return 5;
+    }
 
 }
 
