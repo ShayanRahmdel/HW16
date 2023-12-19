@@ -4,7 +4,7 @@ import base.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -17,8 +17,8 @@ public class Loan extends BaseEntity<Integer> {
 
     private Integer houseTrackingCode;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateofRegistration;
+
+    private LocalDate dateofRegistration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private LoanCategory loanCategory;
@@ -27,9 +27,9 @@ public class Loan extends BaseEntity<Integer> {
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
     @OneToMany(mappedBy = "loan")
-    private List<Installment> installments;
+    private List<PayInstallment> installments;
 
-    public Loan(Integer houseTrackingCode, Date dateofRegistration, LoanCategory loanCategory, Student student) {
+    public Loan(Integer houseTrackingCode, LocalDate dateofRegistration, LoanCategory loanCategory, Student student) {
 
         this.houseTrackingCode = houseTrackingCode;
         this.dateofRegistration = dateofRegistration;
