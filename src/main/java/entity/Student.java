@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,9 +21,8 @@ public class Student extends Person {
     @Column(nullable = false,unique = true,length = 8)
     private String studentNumber;
 
-    @Max(value = 1403,message = "Your year is greater than rules")
-    @Min(value = 1395,message = "Your year less than rules")
-    private Integer yearOfEntry;
+
+    private LocalDate yearOfEntry;
 
     @Column(nullable = false,length = 30)
     private String universityName;
@@ -52,7 +52,7 @@ public class Student extends Person {
     @OneToMany(mappedBy = "student")
     private List<Loan> loans;
 
-    public Student(String firstName, String lastName, String fathersName, String mothersName, String idNumber, String nationalNumber, Date dob, String studentNumber, Integer yearOfEntry, String universityName,String cityOfUniversity, TypeOfUniversity typeOfUniversity, TypeStateUni typeStateUni, Grade grade,String address) {
+    public Student(String firstName, String lastName, String fathersName, String mothersName, String idNumber, String nationalNumber, LocalDate dob, String studentNumber, LocalDate yearOfEntry, String universityName, String cityOfUniversity, TypeOfUniversity typeOfUniversity, TypeStateUni typeStateUni, Grade grade, String address) {
         super(firstName, lastName, fathersName, mothersName, idNumber, nationalNumber, dob);
         this.studentNumber = studentNumber;
         this.yearOfEntry = yearOfEntry;
