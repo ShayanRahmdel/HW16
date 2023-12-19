@@ -1,12 +1,17 @@
-package util;
+package menu;
 
 import entity.Student;
+import util.AppContext;
+import util.GiveInput;
+import util.SecurityContext;
 
 import javax.persistence.NoResultException;
 
 public class MainMenu {
     SignUpStudent signUpStudent = new SignUpStudent();
     SignUpLoan signUpLoan = new SignUpLoan();
+
+    StudentMenu studentMenu = new StudentMenu();
 
     public void menu(){
 
@@ -34,7 +39,8 @@ public class MainMenu {
         try {
             Student student = AppContext.getStudentService().findByUserNameAndPassword(userName, password);
             System.out.println("login sucsessfully");
-            signUpLoan.menu(student);
+            SecurityContext.fillContext(student);
+            studentMenu.menu();
         }catch (NoResultException e){
             System.out.println("not found this user");
         }
