@@ -4,6 +4,7 @@ import base.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 @Setter
 @Entity
@@ -33,6 +34,6 @@ public class Person extends BaseEntity<Integer> {
     @Column(length = 10,nullable = false)
     private String nationalNumber;
 
-    @Temporal(value = TemporalType.DATE)
-    private Date dob;
+
+    private LocalDate dob;
 }
