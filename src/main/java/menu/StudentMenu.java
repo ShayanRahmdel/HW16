@@ -4,9 +4,16 @@ import entity.Student;
 import menu.SignUpLoan;
 import util.GiveInput;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class StudentMenu {
     SignUpLoan signUpLoan = new SignUpLoan();
-    public void menu(Student student){
+
+    Installment installment = new Installment();
+
+    public void menu() {
         Boolean flag = true;
         Integer select = 0;
         while (flag) {
@@ -15,14 +22,12 @@ public class StudentMenu {
             System.out.println("3_Exit");
             select = GiveInput.giveIntegerInput();
             switch (select) {
-                case 1->signUpLoan.menu(student);
-                case 2-> System.out.println("installment");
-                case 3 ->flag=false;
+                case 1 -> signUpLoan.menu();
+                case 2 -> installment.menu();
+                case 3 -> flag = false;
                 default -> System.out.println("Wrong");
             }
         }
-
     }
-
 
 }
