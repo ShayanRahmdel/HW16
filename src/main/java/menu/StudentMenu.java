@@ -22,8 +22,20 @@ public class StudentMenu {
             System.out.println("3_Exit");
             select = GiveInput.giveIntegerInput();
             switch (select) {
-                case 1 -> signUpLoan.menu();
-                case 2 -> installment.menu();
+                case 1 -> {
+                    try {
+                        signUpLoan.menu();
+                    }catch (Exception e){
+                        System.out.println("SomeThing Wrong");
+                    }
+                }
+                case 2 -> {
+                    try {
+                        installment.menu();
+                    }catch (Exception e){
+                        System.out.println("SomeThing Wrong");
+                    }
+                }
                 case 3 -> flag = false;
                 default -> System.out.println("Wrong");
             }

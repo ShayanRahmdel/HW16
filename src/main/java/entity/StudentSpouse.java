@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+
 public class StudentSpouse extends BaseEntity<Integer> {
     @Column(nullable = false, length = 20)
     private String firstName;
