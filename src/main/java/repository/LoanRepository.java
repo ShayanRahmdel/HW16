@@ -5,10 +5,15 @@ import entity.Loan;
 import entity.Student;
 import entity.TypeLoan;
 
+import java.util.List;
+
 public interface LoanRepository extends BaseEntityRepository<Loan,Integer> {
 
-    Integer typeLoanCategoryByStudentId(Integer studentId);
+    List<Integer> typeLoanCategoryByStudentId(Integer studentId);
+    Integer typeLoanCategoryByStudentIdOrderById(Integer studentId);
 
-    Boolean isSignForLoanInFirstTerm(Integer year,Integer studentId,TypeLoan typeLoan);
-    Boolean isSignForLoanInSecondTerm(Integer year, Integer studentId, TypeLoan typeLoan);
+    Loan isPickLoanBefore(Student student);
+
+
+
 }

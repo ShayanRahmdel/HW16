@@ -3,11 +3,17 @@ package service;
 import base.repository.BaseEntityRepository;
 import base.service.BaseService;
 import entity.Loan;
+import entity.Student;
 import entity.TypeLoan;
 
-public interface LoanService extends BaseService<Loan,Integer> {
-    Integer typeLoanCategoryByStudentId(Integer studentId);
+import java.util.List;
 
-    Boolean isSignForLoanInFirstTerm(Integer year, Integer studentId, TypeLoan typeLoan);
-    Boolean isSignForLoanInSecondTerm(Integer year, Integer studentId, TypeLoan typeLoan);
+public interface LoanService extends BaseService<Loan,Integer> {
+    List<Integer> typeLoanCategoryByStudentId(Integer studentId);
+    Integer typeLoanCategoryByStudentIdOrderById(Integer studentId);
+
+    Loan isPickLoanBefore(Student student);
+
+
+
 }

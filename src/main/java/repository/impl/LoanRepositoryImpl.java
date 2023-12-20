@@ -2,18 +2,20 @@ package repository.impl;
 
 import base.repository.impl.BaseEntityRepositoryImpl;
 import entity.Loan;
+import entity.Student;
 import entity.TypeLoan;
 import repository.LoanRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
 
-public class LoanRepositoryImpl extends BaseEntityRepositoryImpl<Loan,Integer> implements LoanRepository {
+public class LoanRepositoryImpl extends BaseEntityRepositoryImpl<Loan, Integer> implements LoanRepository {
     public LoanRepositoryImpl(EntityManager entityManager) {
-        this.entityManager=entityManager;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -22,56 +24,40 @@ public class LoanRepositoryImpl extends BaseEntityRepositoryImpl<Loan,Integer> i
     }
 
     @Override
-    public Integer typeLoanCategoryByStudentId(Integer studentId) {
+    public List<Integer> typeLoanCategoryByStudentId(Integer studentId) {
         String sql = "SELECT l.loancategory_id FROM loan l where l.student_id=?";
         Query nativeQuery = entityManager.createNativeQuery(sql);
-        nativeQuery.setParameter(1,studentId);
-        Object singleResult = nativeQuery.getSingleResult();
-        if (singleResult != null) {
-            return (Integer) singleResult;
-        } else {
+        nativeQuery.setParameter(1, studentId);
+        return (List<Integer>) nativeQuery.getResultList();
+
+    }
+
+    @Override
+    public Integer typeLoanCategoryByStudentIdOrderById(Integer studentId) {
+        String sql = "SELECT l.loancategory_id FROM loan l WHERE l.student_id = ? ORDER BY l.id DESC LIMIT 1";
+        Query nativeQuery = entityManager.createNativeQuery(sql);
+        nativeQuery.setParameter(1, studentId);
+
+        Integer loanCategory = (Integer) nativeQuery.getSingleResult();
+        return loanCategory;
+    }
+
+    @Override
+    public Loan isPickLoanBefore(Student student) {
+        String sql = "SELECT * FROM loan l INNER JOIN loancategory o ON l.loancategory_id = o.id " +
+                "WHERE l.student_id = ? " +
+                "ORDER BY l.id DESC LIMIT 1";
+
+        Query nativeQuery = entityManager.createNativeQuery(sql, Loan.class);
+        nativeQuery.setParameter(1, student.getId());
+
+
+        List<Loan> resultList = nativeQuery.getResultList();
+        if (resultList.isEmpty()) {
             return null;
+        } else {
+            return resultList.get(0);
         }
     }
 
-    @Override
-    public Boolean isSignForLoanInFirstTerm(Integer year , Integer studentId, TypeLoan typeLoan) {
-        String sql = "select l.dateofRegistration from loan l inner join loancategory on l.loancategory_id = loancategory.id where l.student_id=?and typeloan=? and l.dateofRegistration between? and?";
-        Query nativeQuery = entityManager.createNativeQuery(sql);
-        nativeQuery.setParameter(1, studentId);
-        nativeQuery.setParameter(2, typeLoan);
-
-        LocalDate startDate =   LocalDate.of(year,9,23);
-        LocalDate endDate =   LocalDate.of(year,9,23);
-
-
-        nativeQuery.setParameter(3, startDate);
-        nativeQuery.setParameter(4, endDate);
-
-        try {
-            Object singleResult = nativeQuery.getSingleResult();
-            return singleResult != null;
-        } catch (NoResultException e) {
-            return false;
-        }
-    }
-
-    @Override
-    public Boolean isSignForLoanInSecondTerm(Integer year, Integer studentId,TypeLoan typeLoan) {
-        String sql = "select l.dateofRegistration from loan l inner join loancategory on l.loancategory_id = loancategory.id where l.student_id=?and typeloan=? and l.dateofRegistration between? and?";
-        Query nativeQuery = entityManager.createNativeQuery(sql);
-        nativeQuery.setParameter(1, studentId);
-        nativeQuery.setParameter(2, typeLoan);
-
-        LocalDate startDate =   LocalDate.of(year,9,23);
-        LocalDate endDate =   LocalDate.of(year,9,23);
-
-
-        nativeQuery.setParameter(3, startDate);
-        nativeQuery.setParameter(4, endDate);
-
-        List<?> result = nativeQuery.getResultList();
-
-        return !result.isEmpty();
-    }
 }
