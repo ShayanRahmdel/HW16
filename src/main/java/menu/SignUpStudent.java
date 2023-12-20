@@ -1,5 +1,7 @@
 package menu;
 
+import com.github.eloyzone.jalalicalendar.DateConverter;
+import com.github.eloyzone.jalalicalendar.JalaliDate;
 import entity.Grade;
 import entity.Student;
 import entity.TypeOfUniversity;
@@ -18,6 +20,7 @@ import java.util.Date;
 import java.util.Set;
 
 public class SignUpStudent {
+    private DateConverter dateConverter = new DateConverter();
 
     public void signUp() {
         System.out.println("Enter Your FirstName:");
@@ -32,12 +35,12 @@ public class SignUpStudent {
         String idNumber = Validate.nationalCodeValidation();
         System.out.println("Enter National Code:");
         String nationalCode = Validate.nationalCodeValidation();
-        System.out.print("Enter a Birthday date (format: dd/MM/yyyy): ");
-        LocalDate brithDay = getDay();
+        System.out.print("Enter a Birthday date (format: yyyy/mm/dd): ");
+        LocalDate brithDay = getDateFormatString();
         System.out.println("Enter Your Student Number:");
         String studentNumber = GiveInput.giveStringInput();
         System.out.println("Enter Your Entry Year:");
-        LocalDate entryYear = getDay();
+        LocalDate entryYear = getDateFormatString();
         System.out.println("Enter Your University Name:");
         String universityName = GiveInput.giveStringInput();
         System.out.println("Enter City of University:");
@@ -65,7 +68,7 @@ public class SignUpStudent {
         student.setUserName(student.getNationalNumber());
         student.setPassword(GenerateRandomPassword.generateRandomPassword());
         validation(student);
-        SecurityContext.fillContext(student);
+
 
 
 
@@ -90,8 +93,8 @@ public class SignUpStudent {
             AppContext.getStudentService().saveOrUpdate(student);
             System.out.println("Your user name : " + student.getUserName());
             System.out.println("Your Password is : "+ student.getPassword() );
-            StudentMenu studentMenu = new StudentMenu();
-            studentMenu.menu();
+            MainMenu mainMenu = new MainMenu();
+            mainMenu.menu();
         } else {
             for (ConstraintViolation<Student> violation : violations) {
                 System.out.println(violation.getPropertyPath() + ": " + violation.getMessage());
@@ -112,7 +115,7 @@ public class SignUpStudent {
     }
 
     private static TypeOfUniversity typeOfuniversityMethod() {
-        System.out.println("Select type of University: State , Non_State :");
+        System.out.println("Select type of University: State,Non_State,Non_profit_university,Pardis,Excess_capacity,Payam_noor,Applied_Science :");
         String typeOfUniversity = GiveInput.giveStringInput();
         TypeOfUniversity typeOfUniversity1 = null;
         try {
@@ -124,18 +127,15 @@ public class SignUpStudent {
         return typeOfUniversity1;
     }
 
-    private static LocalDate getDay() {
-        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-
-        String dob = GiveInput.giveStringInput();
-        LocalDate date = null;
-        try {
-            date = LocalDate.parse(dob, DATE_FORMATTER);
-            System.out.println("Parsed date: " + date);
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format. Please enter a date in the format dd/MM/yyyy.");
-        }
-        return date;
+    private LocalDate getDateFormatString(){
+        String date = GiveInput.giveStringInput();
+        String[] split = date.split("/");
+        int year = Integer.parseInt(split[0]);
+        int month = Integer.parseInt(split[1]);
+        int day = Integer.parseInt(split[2]);
+        JalaliDate jalaliDate = new JalaliDate(year, month, day);
+        LocalDate gregorianDate = dateConverter.jalaliToGregorian(jalaliDate);
+        return gregorianDate;
     }
 }
