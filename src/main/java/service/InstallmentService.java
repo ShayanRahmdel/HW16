@@ -11,9 +11,9 @@ public interface InstallmentService extends BaseService<PayInstallment,Integer> 
 
 
 
-    public List<LocalDate> tuition9 (Student student);
-
-    public List<Double> calculateTuition9();
+    List<Object[]> showPayedInstallment(Student student);
+    List<Object[]> showNotPayedInstallment(Student student);
+    PayInstallment findByNumberInstallment(Integer number,Student student,LocalDate dueDate);
 }
 
 

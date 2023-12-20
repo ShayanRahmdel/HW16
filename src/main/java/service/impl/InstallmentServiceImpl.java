@@ -19,33 +19,18 @@ public class InstallmentServiceImpl extends BaseEntityServiceImpl<PayInstallment
     }
 
 
-
-    public  List<LocalDate> tuition9 (Student student){
-        int year = 0;
-        if (student.getGrade().equals(Grade.Associate)){
-             year = student.getYearOfEntry().getYear()+2;
-        }else if (student.getGrade().equals(Grade.Bachelor_Continuous)||student.getGrade().equals(Grade.Bachelor_Discontinuous)){
-             year = student.getYearOfEntry().getYear()+4;
-        }
-        List<LocalDate> dates = new ArrayList<>();
-        LocalDate currentDate = LocalDate.of(year,3,21);
-        LocalDate endDate = currentDate.plusMonths(18);
-        while (!currentDate.isAfter(endDate)) {
-            dates.add(currentDate);
-            currentDate = currentDate.plus(1, ChronoUnit.MONTHS);
-        }
-        return dates;
+    @Override
+    public List<Object[]> showPayedInstallment(Student student) {
+        return repository.showPayedInstallment(student);
     }
 
-    public  List<Double> calculateTuition9() {
-        Double installment = 52000.0;
-        List<Double> installmentList = new ArrayList<>();
-        for (int i = 1; i <= 19; i++) {
-            installmentList.add(installment);
-            if (i == 12) {
-                installment = installment * 2;
-            }
-        }
-        return installmentList;
+    @Override
+    public List<Object[]> showNotPayedInstallment(Student student) {
+        return repository.showNotPayedInstallment(student);
+    }
+
+    @Override
+    public PayInstallment findByNumberInstallment(Integer number, Student student,LocalDate dueDate) {
+        return  repository.findByNumberInstallment(number,student,dueDate);
     }
 }
