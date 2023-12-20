@@ -10,6 +10,7 @@ import util.GiveInput;
 import util.SecurityContext;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Installment {
@@ -66,32 +67,24 @@ public class Installment {
         }
     }
 
+
     private void showNotPayedInstallment(Student student) {
-        List<Object[]> resultList = AppContext.getInstallmentService().showNotPayedInstallment(student);
-        for (Object[] row : resultList) {
-            Integer number = (Integer) row[0];
-            java.sql.Date dueDateSql = (java.sql.Date) row[1];
-            LocalDate dueDate = dueDateSql.toLocalDate();
-            Double amount = (Double) row[2];
+        List<PayInstallment> payInstallments = AppContext.getInstallmentService().findByStudent(student);
+        for (PayInstallment payInstall : payInstallments) {
+            LocalDate dueDate = payInstall.getDueDate();
             JalaliDate jalaliDate = dateConverter.gregorianToJalali(dueDate.getYear(),dueDate.getMonth(),dueDate.getDayOfMonth());
-
-
-            System.out.println("Number: " + number + ", DueDate: " + jalaliDate + ", Amount: " + amount);
+            System.out.println( "ID: "+   payInstall.getId() + "  Number: " + payInstall.getNumber() + ", DueDate: " + jalaliDate + ", Amount: " + payInstall.getAmount());
         }
+
+
     }
 
     private void payInstallment(Student student,LocalDate localDate) {
         System.out.println("enter your installmentNumber number");
         Integer number = GiveInput.giveIntegerInput();
-        System.out.println("enter your due date (format: yyyy/mm/dd)");
-        String duedate = GiveInput.giveStringInput();
-        String[] split1 = duedate.split("/");
-        int year1 = Integer.parseInt(split1[0]);
-        int month1 = Integer.parseInt(split1[1]);
-        int day1 = Integer.parseInt(split1[2]);
-        JalaliDate jalaliDate1 = new JalaliDate(year1, month1, day1);
-        LocalDate gregorian2 = dateConverter.jalaliToGregorian(jalaliDate1);
-        PayInstallment installment = AppContext.getInstallmentService().findByNumberInstallment(number, SecurityContext.getStudent(),gregorian2);
+        System.out.println("Enter id payment");
+        Integer id = GiveInput.giveIntegerInput();
+        PayInstallment installment = AppContext.getInstallmentService().findByNumberInstallment(number, SecurityContext.getStudent().getId(),id);
         System.out.println("You should pay: " + installment.getAmount());
         System.out.println("enter your credit card number");
         String creditNumber = GiveInput.giveStringInput();
