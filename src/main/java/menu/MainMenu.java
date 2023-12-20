@@ -23,8 +23,20 @@ public class MainMenu {
             System.out.println("3_Exit");
             select = GiveInput.giveIntegerInput();
             switch (select) {
-                case 1 -> signUpStudent.signUp();
-                case 2 ->signIn();
+                case 1 -> {
+                    try {
+                        signUpStudent.signUp();
+                    }catch (Exception e){
+                        System.out.println("SomeThing Wrong");
+                    }
+                }
+                case 2 ->{
+                    try {
+                        signIn();
+                    }catch (Exception e){
+                        System.out.println("SomeThing Wrong");
+                    }
+                }
                 case 3 ->flag=false;
                 default -> System.out.println("Wrong");
             }
