@@ -23,8 +23,8 @@ public class Housing {
         System.out.println("You Can sign for Loan");
         System.out.println("======================");
         StudentSpouse spouseInfo = getSpouseInfo(SecurityContext.getStudent());
-        if (isSpouseHasHouseLoan(spouseInfo, SecurityContext.getStudent()).equals(true)) {
-            System.out.println("Your Spouse Already have houseLoan");
+        if (isSpouseHasHouseLoan(spouseInfo, SecurityContext.getStudent()).equals(false) || isGetLoanBefore(SecurityContext.getStudent()).equals(false)) {
+            System.out.println("You Or Your Spouse Already have houseLoan or you already have");
         } else {
             System.out.println("Enter Your HouseTrackingCode");
             Integer houseTrackCode = GiveInput.giveIntegerInput();
@@ -43,11 +43,11 @@ public class Housing {
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(32000000.0, bank1, SecurityContext.getStudent().getId());
                 System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 1) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 1) {
 
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(32000000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(32000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
 
             } else if (!isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("gilan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("esfahan") ||
@@ -59,11 +59,11 @@ public class Housing {
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(26000000.0, bank1, SecurityContext.getStudent().getId());
                 System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 2) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 2) {
 
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(26000000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(26000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
             } else {
                 LoanCategory loanCategory = new LoanCategory(3);
@@ -71,11 +71,11 @@ public class Housing {
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(19500000.0, bank1, SecurityContext.getStudent().getId());
                 System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 3) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 3) {
 
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(19500000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(19500000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
             }
         }
@@ -105,32 +105,6 @@ public class Housing {
         return studentSpouse;
     }
 
-    private static Date getDate() {
-        String dob = GiveInput.giveStringInput();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = dateFormat.parse(dob);
-            System.out.println("Parsed date: " + date);
-        } catch (ParseException e) {
-            System.out.println("Invalid date format. Please enter a date in the format dd/MM/yyyy.");
-        }
-        return date;
-    }
-
-
-    public static boolean checkDateFirstTerm(Date date) {
-
-        int year = date.getYear() + 1900;
-        int month = date.getMonth() + 1;
-        int day = date.getDate();
-
-        if (month == 11 && day >= 1 && day <= 7 && year >= 1000) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private static void validationLoan(Loan loan) {
         Set<ConstraintViolation<Loan>> violations = Validate.validator.validate(loan);
@@ -164,16 +138,13 @@ public class Housing {
     private Boolean isSpouseHasHouseLoan(StudentSpouse studentSpouse, Student student) {
         if (AppContext.getStudentSpouseService().isSpouseStudent(student.getId())) {
             Student byStudentNumber = AppContext.getStudentService().findByStudentNumber(studentSpouse.getNationalNumber());
-            if (AppContext.getLoanService().typeLoanCategoryByStudentId(byStudentNumber.getId()) == 1 ||
-                    AppContext.getLoanService().typeLoanCategoryByStudentId(byStudentNumber.getId()) == 2 ||
-                    AppContext.getLoanService().typeLoanCategoryByStudentId(byStudentNumber.getId()) == 3) {
-                return true;
+            List<Integer> allLoans = AppContext.getLoanService().typeLoanCategoryByStudentId(byStudentNumber.getId());
+            for (Integer loan : allLoans) {
+                if (loan == 1 || loan == 2 || loan == 3) {
+                    return false;
+                }
             }
-
-        } else {
-            return false;
-        }
-        return false;
+        }return true;
     }
 
     private String findCityStudent(Student student) {
@@ -181,17 +152,17 @@ public class Housing {
         return city[0];
     }
 
-    private void createInstallment(Double loanAmount,Integer year) {
-        List<PayInstallment> installments=new ArrayList<>();
-        LocalDate repaymentDate = LocalDate.of(year,3,21);
-        double repayAmount = (loanAmount*4)/100 + loanAmount;
-        int count=1;
-        for (int i = 0;i<5;i++) {
-            double amount = (repayAmount/31)*Math.pow(2,i);
-            for(int j = 0;j<12;j++){
+    private void createInstallment(Double loanAmount, Integer year) {
+        List<PayInstallment> installments = new ArrayList<>();
+        LocalDate repaymentDate = LocalDate.of(year, 3, 21);
+        double repayAmount = (loanAmount * 4) / 100 + loanAmount;
+        int count = 1;
+        for (int i = 0; i < 5; i++) {
+            double amount = (repayAmount / 31) * Math.pow(2, i);
+            for (int j = 0; j < 12; j++) {
                 PayInstallment payInstallment = new PayInstallment();
                 payInstallment.setNumber(count++);
-                payInstallment.setAmount(amount/12);
+                payInstallment.setAmount(amount / 12);
                 payInstallment.setDueDate(repaymentDate);
                 payInstallment.setLoan(loan);
                 installments.add(payInstallment);
@@ -199,19 +170,46 @@ public class Housing {
 
             }
         }
-        for (PayInstallment ins:installments) {
+        for (PayInstallment ins : installments) {
             AppContext.getInstallmentService().saveOrUpdate(ins);
         }
     }
 
 
-    private Integer returnYear(Student student){
-        if (student.getGrade().equals(Grade.Associate)||student.getGrade().equals(Grade.Masters_Discontinuous)){
+    private Integer returnYear(Student student) {
+        if (student.getGrade().equals(Grade.Associate) || student.getGrade().equals(Grade.Masters_Discontinuous)) {
             return 2;
-        }if (student.getGrade().equals(Grade.Bachelor_Discontinuous)||student.getGrade().equals(Grade.Bachelor_Continuous)){
+        }
+        if (student.getGrade().equals(Grade.Bachelor_Discontinuous) || student.getGrade().equals(Grade.Bachelor_Continuous)) {
             return 4;
-        }else if (student.getGrade().equals(Grade.Masters_Continuous)){
+        } else if (student.getGrade().equals(Grade.Masters_Continuous)) {
             return 6;
-        }else return 5;
+        } else return 5;
+    }
+
+    public static Boolean studentHasActiveLoan(Student student) {
+        List<Loan> loans = student.getLoans();
+        if (!loans.isEmpty()) {
+            try {
+                for (Loan loan : loans) {
+                    if (loan.getLoanCategory().getTypeLoan().equals(TypeLoan.HousingLoan))
+                        return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private Boolean isGetLoanBefore(Student student) {
+        List<Integer> allLoans = AppContext.getLoanService().typeLoanCategoryByStudentId(student.getId());
+        for (Integer loan:allLoans) {
+            if (loan==1||loan==2 || loan==3) {
+                return false;
+
+            }
+        }
+        return true;
     }
 }
