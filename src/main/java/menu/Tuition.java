@@ -32,18 +32,18 @@ public class Tuition {
         } catch (IllegalArgumentException e) {
             System.out.println("enter valid bank");
         }
-        if (!studentHasActiveLoan(SecurityContext.getStudent(), SecurityContext.getTodayDate())) {
+        if (isPickLoanBefoe(SecurityContext.getStudent(),SecurityContext.getTodayDate()).equals(false)) {
             if (isUniversityTypeValid(SecurityContext.getStudent()) && SecurityContext.getStudent().getGrade().equals(Grade.Associate) || SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Continuous) ||
                     SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Discontinuous)) {
                 LoanCategory loanCategory = new LoanCategory(9);
                 loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(1300000.0, bank1, SecurityContext.getStudent().getId());
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 9) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 9) {
 
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(1300000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(1300000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
 
             }
@@ -53,10 +53,10 @@ public class Tuition {
                 loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(2600000.0, bank1, SecurityContext.getStudent().getId());
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 8) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 8) {
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(2600000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(2600000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
 
             }
@@ -65,10 +65,10 @@ public class Tuition {
                 loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
                 validationLoan(loan);
                 AppContext.getCreditCardService().updateBalanceById(65000000.0, bank1, SecurityContext.getStudent().getId());
-                if (AppContext.getLoanService().typeLoanCategoryByStudentId(SecurityContext.getStudentId()) == 7) {
+                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 7) {
 
                     Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(2600000.0,SecurityContext.getStudent().getYearOfEntry().getYear()+year);
+                    createInstallment(2600000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
                 }
             }
         } else System.out.println("You already have a loan");
@@ -76,17 +76,17 @@ public class Tuition {
 
     }
 
-    private void createInstallment(Double loanAmount,Integer year) {
-        List<PayInstallment> installments=new ArrayList<>();
-        LocalDate repaymentDate = LocalDate.of(year,3,21);
-        double repayAmount = (loanAmount*4)/100 + loanAmount;
-        int count=1;
-        for (int i = 0;i<5;i++) {
-            double amount = (repayAmount/31)*Math.pow(2,i);
-            for(int j = 0;j<12;j++){
+    private void createInstallment(Double loanAmount, Integer year) {
+        List<PayInstallment> installments = new ArrayList<>();
+        LocalDate repaymentDate = LocalDate.of(year, 3, 21);
+        double repayAmount = (loanAmount * 4) / 100 + loanAmount;
+        int count = 1;
+        for (int i = 0; i < 5; i++) {
+            double amount = (repayAmount / 31) * Math.pow(2, i);
+            for (int j = 0; j < 12; j++) {
                 PayInstallment payInstallment = new PayInstallment();
                 payInstallment.setNumber(count++);
-                payInstallment.setAmount(amount/12);
+                payInstallment.setAmount(amount / 12);
                 payInstallment.setDueDate(repaymentDate);
                 payInstallment.setLoan(loan);
                 installments.add(payInstallment);
@@ -94,7 +94,7 @@ public class Tuition {
 
             }
         }
-        for (PayInstallment ins:installments) {
+        for (PayInstallment ins : installments) {
             AppContext.getInstallmentService().saveOrUpdate(ins);
         }
     }
@@ -141,15 +141,24 @@ public class Tuition {
 
         return false;
     }
-    private Integer returnYear(Student student){
-        if (student.getGrade().equals(Grade.Associate)||student.getGrade().equals(Grade.Masters_Discontinuous)){
+
+    private Integer returnYear(Student student) {
+        if (student.getGrade().equals(Grade.Associate) || student.getGrade().equals(Grade.Masters_Discontinuous)) {
             return 2;
-        }if (student.getGrade().equals(Grade.Bachelor_Discontinuous)||student.getGrade().equals(Grade.Bachelor_Continuous)){
+        }
+        if (student.getGrade().equals(Grade.Bachelor_Discontinuous) || student.getGrade().equals(Grade.Bachelor_Continuous)) {
             return 4;
-        }else if (student.getGrade().equals(Grade.Masters_Continuous)){
+        } else if (student.getGrade().equals(Grade.Masters_Continuous)) {
             return 6;
-        }else return 5;
+        } else return 5;
     }
 
+    private Boolean isPickLoanBefoe(Student student,LocalDate date) {
+        Loan pastLoan = AppContext.getLoanService().isPickLoanBefore(student);
+        if (pastLoan.getDateofRegistration().getYear() == date.getYear()&&pastLoan.getLoanCategory().getTypeLoan().equals(TypeLoan.TuitionLoan)){
+            return true;
+        }
+        return false;
+    }
 }
 
