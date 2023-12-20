@@ -4,6 +4,7 @@ import base.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,8 +22,8 @@ public class CreditCard extends BaseEntity<Integer> {
     @Column(nullable = false)
     private String cvv2;
 
-    @Temporal(value = TemporalType.DATE)
-    private Date expiretionDate;
+
+    private LocalDate expiretionDate;
 
     @Enumerated(value = EnumType.STRING)
     private Bank bankName;
@@ -30,7 +31,7 @@ public class CreditCard extends BaseEntity<Integer> {
     @ManyToOne(fetch = FetchType.LAZY)
     private Student student;
 
-    public CreditCard(String cardNumber, String cvv2, Date expiretionDate, Bank bankName, Student student) {
+    public CreditCard(String cardNumber, String cvv2, LocalDate expiretionDate, Bank bankName, Student student) {
         this.cardNumber = cardNumber;
         this.cvv2 = cvv2;
         this.expiretionDate = expiretionDate;
