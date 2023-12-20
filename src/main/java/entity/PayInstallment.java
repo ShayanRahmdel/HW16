@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+
 public class PayInstallment extends BaseEntity<Integer> {
 
     private Integer number;
@@ -24,6 +24,7 @@ public class PayInstallment extends BaseEntity<Integer> {
 
     private LocalDate paymentDate;
     @ManyToOne(fetch = FetchType.EAGER)
+    @ToString.Exclude
     private Loan loan;
 
     public PayInstallment(Integer number, Double amount, LocalDate dueDate, Loan loan) {
@@ -31,5 +32,16 @@ public class PayInstallment extends BaseEntity<Integer> {
         this.amount = amount;
         this.dueDate = dueDate;
         this.loan = loan;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "number=====> " + number +"\n"+
+                "amount=====> " + amount +"\n"+
+                "isPayed====> " + isPayed +"\n"+
+                "dueDate====> " + dueDate +"\n"+
+                "paymentDate=> " + paymentDate +"\n"+
+                "===============================";
     }
 }
