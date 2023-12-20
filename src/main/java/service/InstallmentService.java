@@ -13,7 +13,10 @@ public interface InstallmentService extends BaseService<PayInstallment,Integer> 
 
     List<Object[]> showPayedInstallment(Student student);
     List<Object[]> showNotPayedInstallment(Student student);
-    PayInstallment findByNumberInstallment(Integer number,Student student,LocalDate dueDate);
+    PayInstallment findByNumberInstallment(Integer number,Integer studentId,Integer id);
+
+
+    List<PayInstallment> findByStudent(Student student);
 }
 
 

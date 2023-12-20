@@ -13,5 +13,9 @@ public interface InstallmentRepository extends BaseEntityRepository<PayInstallme
     List<Object[]> showPayedInstallment(Student student);
     List<Object[]> showNotPayedInstallment(Student student);
 
-    PayInstallment findByNumberInstallment(Integer number, Student student, LocalDate dueDate);
+    PayInstallment findByNumberInstallment(Integer number, Integer studentId,Integer id);
+
+
+
+    List<PayInstallment> findByStudent(Student student);
 }

@@ -30,7 +30,14 @@ public class InstallmentServiceImpl extends BaseEntityServiceImpl<PayInstallment
     }
 
     @Override
-    public PayInstallment findByNumberInstallment(Integer number, Student student,LocalDate dueDate) {
-        return  repository.findByNumberInstallment(number,student,dueDate);
+    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Integer id) {
+        return  repository.findByNumberInstallment(number,studentId,id);
+    }
+
+
+
+    @Override
+    public List<PayInstallment> findByStudent(Student student) {
+        return repository.findByStudent(student);
     }
 }

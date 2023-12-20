@@ -6,6 +6,7 @@ import entity.Student;
 import repository.InstallmentRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
@@ -40,12 +41,29 @@ public class InstallmentRepositoryImpl extends BaseEntityRepositoryImpl<PayInsta
     }
 
     @Override
-    public PayInstallment findByNumberInstallment(Integer number, Student student, LocalDate dueDate) {
-        String hql = "SELECT p FROM PayInstallment p inner join Loan l on l.id = p.loan.id WHERE l.student.id= :studentId AND p.number=:number AND p.duedate = :dueDate";
+    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Integer id) {
+        String hql = "SELECT p FROM PayInstallment p INNER JOIN Loan l ON l.id = p.loan.id " +
+                "WHERE l.student.id = :studentId AND p.number = :number AND p.id=:id";
         TypedQuery<PayInstallment> query = entityManager.createQuery(hql, PayInstallment.class);
-        query.setParameter("studentId",student.getId());
-        query.setParameter("number",number);
-        query.setParameter("dueDate",dueDate);
-         return query.getSingleResult();
+        query.setParameter("studentId", studentId);
+        query.setParameter("number", number);
+        query.setParameter("id", id);
+
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Return null when no result is found
+        }
+    }
+
+
+
+    @Override
+    public List<PayInstallment> findByStudent(Student student) {
+        String hql = "SELECT p FROM PayInstallment p INNER JOIN Loan l ON l.id = p.loan.id WHERE l.student.id = :studentId and p.isPayed is null or p.isPayed = false";
+        TypedQuery<PayInstallment> query = entityManager.createQuery(hql, PayInstallment.class);
+        query.setParameter("studentId", student.getId());
+        return query.getResultList();
+
     }
 }
