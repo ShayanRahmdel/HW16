@@ -47,47 +47,54 @@ public class SignUpLoan {
                 System.out.println("5_Exit");
                 select = GiveInput.giveIntegerInput();
                 switch (select) {
-                    case 1 -> getCreditInfo();
-                    case 2 -> tuition.tuitionLoan();
-                    case 3 -> educational.educationalLoan();
+                    case 1 -> {
+                        try {
+                            getCreditInfo();
+                        }catch (Exception e){
+                            System.out.println("SomeThing Wrong");
+                        }
+                    }
+                    case 2 -> {
+                        try {
+                            tuition.tuitionLoan();
+                        }catch (Exception e){
+                            System.out.println("SomeThing Wrong");
+                        }
+                    }
+                    case 3 -> {
+                        try {
+                            educational.educationalLoan();
+                        }catch (Exception e){
+                            System.out.println("SomeThing Wrong");
+                        }
+                    }
                     case 4 -> housing.housingLoan();
+
+
+
                     case 5 -> flag = false;
                     default -> System.out.println("Wrong");
                 }
             }
 
-        } else {
+        } else if(isPastFromEducation(SecurityContext.getStudent(),SecurityContext.getTodayDate())) {
             System.out.println("You cannot create a loan on this date");
         }
     }
 
 
-    private static Date getDate() {
-        String dob = GiveInput.giveStringInput();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = null;
-        try {
-            date = dateFormat.parse(dob);
-            System.out.println("Parsed date: " + date);
-        } catch (ParseException e) {
-            System.out.println("Invalid date format. Please enter a date in the format dd/MM/yyyy.");
-        }
-        return date;
+    private LocalDate getDateFormatString(){
+        String date = GiveInput.giveStringInput();
+        String[] split = date.split("/");
+        int year = Integer.parseInt(split[0]);
+        int month = Integer.parseInt(split[1]);
+        int day = Integer.parseInt(split[2]);
+        JalaliDate jalaliDate = new JalaliDate(year, month, day);
+        LocalDate gregorianDate = dateConverter.jalaliToGregorian(jalaliDate);
+        return gregorianDate;
     }
 
 
-    public static boolean checkDateFirstTerm(Date date) {
-
-        int year = date.getYear() + 1900;
-        int month = date.getMonth() + 1;
-        int day = date.getDate();
-
-        if (month == 11 && day >= 1 && day <= 7 && year >= 1000) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
     private void getCreditInfo() {
@@ -96,8 +103,8 @@ public class SignUpLoan {
         String creditNummber = GiveInput.giveStringInput();
         System.out.println("Enter Your cvv2:");
         String cvv2 = GiveInput.giveStringInput();
-        System.out.println("Enter epireDate:");
-        Date date = getDate();
+        System.out.println("Enter expireDate format yyyy/mm/dd:");
+        LocalDate date = getDateFormatString();
         System.out.println("Enter Your Bank name:");
         Bank bank = findBank(creditNummber);
         CreditCard creditCard = new CreditCard(creditNummber, cvv2, date, bank, student);
@@ -137,15 +144,18 @@ public class SignUpLoan {
     }
 
 
-    private static void validationLoan(Loan loan) {
-        Set<ConstraintViolation<Loan>> violations = Validate.validator.validate(loan);
-        if (violations.isEmpty()) {
-            AppContext.getLoanService().saveOrUpdate(loan);
-            System.out.println("Your Loan add sucsessfully");
-        } else {
-            for (ConstraintViolation<Loan> violation : violations) {
-                System.out.println(violation.getPropertyPath() + ": " + violation.getMessage());
-            }
-        }
+
+
+    private Boolean isPastFromEducation(Student student,LocalDate gregorian){
+        if ((SecurityContext.getStudent().getGrade().equals(Grade.Associate) || SecurityContext.getStudent().getGrade().equals(Grade.Masters_Discontinuous))
+                && gregorian.getYear() >= SecurityContext.getStudent().getYearOfEntry().getYear() + 2
+                || (SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Discontinuous) || SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Continuous))
+                && gregorian.getYear() >= SecurityContext.getStudent().getYearOfEntry().getYear() + 4
+                || SecurityContext.getStudent().getGrade().equals(Grade.Masters_Continuous)
+                && gregorian.getYear() >= SecurityContext.getStudent().getYearOfEntry().getYear() + 6
+                || (SecurityContext.getStudent().getGrade().equals(Grade.PHD_Continuous) || SecurityContext.getStudent().getGrade().equals(Grade.PHD_Discontinuous) || SecurityContext.getStudent().getGrade().equals(Grade.PHD_professional))
+                && gregorian.getYear() >= SecurityContext.getStudent().getYearOfEntry().getYear() + 5){
+            return true;
+        }else return false;
     }
 }
