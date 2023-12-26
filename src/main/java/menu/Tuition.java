@@ -38,6 +38,7 @@ public class Tuition {
                 LoanCategory loanCategory = new LoanCategory(9);
                 loan = new Loan(null, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
                 validationLoan(loan);
+
                 AppContext.getCreditCardService().updateBalanceById(1300000.0, bank1, SecurityContext.getStudent().getId());
                 if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 9) {
 
@@ -155,7 +156,10 @@ public class Tuition {
 
     private Boolean isPickLoanBefoe(Student student,LocalDate date) {
         Loan pastLoan = AppContext.getLoanService().isPickLoanBefore(student);
-        if (pastLoan.getDateofRegistration().getYear() == date.getYear()&&pastLoan.getLoanCategory().getTypeLoan().equals(TypeLoan.TuitionLoan)){
+        if (pastLoan==null){
+            return false;
+        }
+         else if (pastLoan.getDateofRegistration().getYear() == date.getYear()&&pastLoan.getLoanCategory().getTypeLoan().equals(TypeLoan.TuitionLoan)){
             return true;
         }
         return false;
