@@ -32,7 +32,8 @@ public class Tuition {
         } catch (IllegalArgumentException e) {
             System.out.println("enter valid bank");
         }
-        if (isPickLoanBefoe(SecurityContext.getStudent(),SecurityContext.getTodayDate()).equals(false)) {
+
+            if (duplicateLoan(SecurityContext.getStudent(), SecurityContext.getTodayDate()).equals(false)) {
             if (isUniversityTypeValid(SecurityContext.getStudent()) && SecurityContext.getStudent().getGrade().equals(Grade.Associate) || SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Continuous) ||
                     SecurityContext.getStudent().getGrade().equals(Grade.Bachelor_Discontinuous)) {
                 LoanCategory loanCategory = new LoanCategory(9);
@@ -161,6 +162,16 @@ public class Tuition {
         }
          else if (pastLoan.getDateofRegistration().getYear() == date.getYear()&&pastLoan.getLoanCategory().getTypeLoan().equals(TypeLoan.TuitionLoan)){
             return true;
+        }
+        return false;
+    }
+
+    private Boolean duplicateLoan(Student student,LocalDate date) {
+        List<Loan> loans = AppContext.getLoanService().isPickLoanBefore2(student);
+        for (Loan loan : loans) {
+            if (loan.getDateofRegistration().getYear()==date.getYear()){
+                return true;
+            }
         }
         return false;
     }
