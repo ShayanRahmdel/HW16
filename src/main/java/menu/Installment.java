@@ -73,7 +73,7 @@ public class Installment {
         for (PayInstallment payInstall : payInstallments) {
             LocalDate dueDate = payInstall.getDueDate();
             JalaliDate jalaliDate = dateConverter.gregorianToJalali(dueDate.getYear(),dueDate.getMonth(),dueDate.getDayOfMonth());
-            System.out.println( "ID: "+   payInstall.getId() + "  Number: " + payInstall.getNumber() + ", DueDate: " + jalaliDate + ", Amount: " + payInstall.getAmount());
+            System.out.println("Number: " + payInstall.getNumber() + ", DueDate: " + jalaliDate + ", Amount: " + payInstall.getAmount());
         }
 
 
@@ -82,9 +82,9 @@ public class Installment {
     private void payInstallment(Student student,LocalDate localDate) {
         System.out.println("enter your installmentNumber number");
         Integer number = GiveInput.giveIntegerInput();
-        System.out.println("Enter id payment");
-        Integer id = GiveInput.giveIntegerInput();
-        PayInstallment installment = AppContext.getInstallmentService().findByNumberInstallment(number, SecurityContext.getStudent().getId(),id);
+        System.out.println("Enter Amount of payment");
+        Double aDouble = GiveInput.giveDoubleInput();
+        PayInstallment installment = AppContext.getInstallmentService().findByNumberInstallment(number, SecurityContext.getStudent().getId(),aDouble);
         System.out.println("You should pay: " + installment.getAmount());
         System.out.println("enter your credit card number");
         String creditNumber = GiveInput.giveStringInput();
