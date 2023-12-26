@@ -30,8 +30,8 @@ public class InstallmentServiceImpl extends BaseEntityServiceImpl<PayInstallment
     }
 
     @Override
-    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Integer id) {
-        return  repository.findByNumberInstallment(number,studentId,id);
+    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Double amount) {
+        return  repository.findByNumberInstallment(number,studentId,amount);
     }
 
 

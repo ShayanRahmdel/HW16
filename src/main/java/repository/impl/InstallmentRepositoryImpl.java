@@ -41,13 +41,13 @@ public class InstallmentRepositoryImpl extends BaseEntityRepositoryImpl<PayInsta
     }
 
     @Override
-    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Integer id) {
+    public PayInstallment findByNumberInstallment(Integer number, Integer studentId,Double amount) {
         String hql = "SELECT p FROM PayInstallment p INNER JOIN Loan l ON l.id = p.loan.id " +
-                "WHERE l.student.id = :studentId AND p.number = :number AND p.id=:id";
+                "WHERE l.student.id = :studentId AND p.number = :number AND p.amount=:amount";
         TypedQuery<PayInstallment> query = entityManager.createQuery(hql, PayInstallment.class);
         query.setParameter("studentId", studentId);
         query.setParameter("number", number);
-        query.setParameter("id", id);
+        query.setParameter("amount", amount);
 
         try {
             return query.getSingleResult();
