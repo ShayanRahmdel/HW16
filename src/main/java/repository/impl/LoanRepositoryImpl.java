@@ -60,4 +60,13 @@ public class LoanRepositoryImpl extends BaseEntityRepositoryImpl<Loan, Integer> 
         }
     }
 
+    @Override
+    public List<Loan> isPickLoanBefore2(Student student) {
+        String hql = "SELECT l from Loan l where student.id=:student_id";
+        TypedQuery<Loan> query = entityManager.createQuery(hql, Loan.class);
+        query.setParameter("student_id", student.getId());
+        return query.getResultList();
+
+    }
+
 }

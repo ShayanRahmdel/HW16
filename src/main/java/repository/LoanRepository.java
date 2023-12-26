@@ -14,6 +14,8 @@ public interface LoanRepository extends BaseEntityRepository<Loan,Integer> {
 
     Loan isPickLoanBefore(Student student);
 
+    List<Loan> isPickLoanBefore2(Student student);
+
 
 
 }

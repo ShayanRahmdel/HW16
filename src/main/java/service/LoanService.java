@@ -13,6 +13,8 @@ public interface LoanService extends BaseService<Loan,Integer> {
     Integer typeLoanCategoryByStudentIdOrderById(Integer studentId);
 
     Loan isPickLoanBefore(Student student);
+    List<Loan> isPickLoanBefore2(Student student);
+
 
 
 

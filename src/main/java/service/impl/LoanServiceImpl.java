@@ -32,6 +32,10 @@ public class LoanServiceImpl extends BaseEntityServiceImpl<Loan,Integer,LoanRepo
         return repository.isPickLoanBefore(student);
     }
 
+    @Override
+    public List<Loan> isPickLoanBefore2(Student student) {
+        return repository.isPickLoanBefore2(student);
+    }
 
 
 }
