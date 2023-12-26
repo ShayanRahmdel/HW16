@@ -22,64 +22,69 @@ public class Housing {
 
         System.out.println("You Can sign for Loan");
         System.out.println("======================");
-        StudentSpouse spouseInfo = getSpouseInfo(SecurityContext.getStudent());
-        if (isSpouseHasHouseLoan(spouseInfo, SecurityContext.getStudent()).equals(false) || isGetLoanBefore(SecurityContext.getStudent()).equals(false)) {
-            System.out.println("You Or Your Spouse Already have houseLoan or you already have");
+        if (isGetLoanBefore(SecurityContext.getStudent()).equals(false)) {
+            System.out.println("You already signed");
         } else {
-            System.out.println("Enter Your HouseTrackingCode");
-            Integer houseTrackCode = GiveInput.giveIntegerInput();
-            System.out.println("Which bank want get Loan?\n");
-            System.out.println(AppContext.getCreditCardService().findCreditById(SecurityContext.getStudent().getId()));
-            String bank = GiveInput.giveStringInput();
-            Bank bank1 = null;
-            try {
-                bank1 = Bank.valueOf(bank);
-            } catch (IllegalArgumentException e) {
-                System.out.println("enter valid bank");
-            }
-            if (SecurityContext.getStudent().getCityOfUniversity().equals("tehran") && !isStudentHaveDorm(SecurityContext.getStudent())) {
-                LoanCategory loanCategory = new LoanCategory(1);
-                loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(32000000.0, bank1, SecurityContext.getStudent().getId());
-                System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 1) {
-
-
-                    Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(32000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
-                }
-
-            } else if (!isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("gilan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("esfahan") ||
-                    !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("azarbayjansharghi") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("fars") ||
-                    !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("khozestan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("ghom") ||
-                    !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("khorasan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("alborz")) {
-                LoanCategory loanCategory = new LoanCategory(2);
-                loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(26000000.0, bank1, SecurityContext.getStudent().getId());
-                System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 2) {
-
-
-                    Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(26000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
-                }
+            StudentSpouse spouseInfo = getSpouseInfo(SecurityContext.getStudent());
+            if (isSpouseHasHouseLoan(spouseInfo, SecurityContext.getStudent()).equals(false) || isGetLoanBefore(SecurityContext.getStudent()).equals(false)) {
+                System.out.println("You Or Your Spouse Already have houseLoan or you already have");
             } else {
-                LoanCategory loanCategory = new LoanCategory(3);
-                loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
-                validationLoan(loan);
-                AppContext.getCreditCardService().updateBalanceById(19500000.0, bank1, SecurityContext.getStudent().getId());
-                System.out.println("Your loan sucessfully added");
-                if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 3) {
+                System.out.println("Enter Your HouseTrackingCode");
+                Integer houseTrackCode = GiveInput.giveIntegerInput();
+                System.out.println("Which bank want get Loan?\n");
+                System.out.println(AppContext.getCreditCardService().findCreditById(SecurityContext.getStudent().getId()));
+                String bank = GiveInput.giveStringInput();
+                Bank bank1 = null;
+                try {
+                    bank1 = Bank.valueOf(bank);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("enter valid bank");
+                }
+                if (SecurityContext.getStudent().getCityOfUniversity().equals("tehran") && !isStudentHaveDorm(SecurityContext.getStudent())) {
+                    LoanCategory loanCategory = new LoanCategory(1);
+                    loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                    validationLoan(loan);
+                    AppContext.getCreditCardService().updateBalanceById(32000000.0, bank1, SecurityContext.getStudent().getId());
+                    System.out.println("Your loan sucessfully added");
+                    if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 1) {
 
 
-                    Integer year = returnYear(SecurityContext.getStudent());
-                    createInstallment(19500000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
+                        Integer year = returnYear(SecurityContext.getStudent());
+                        createInstallment(32000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
+                    }
+
+                } else if (!isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("gilan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("esfahan") ||
+                        !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("azarbayjansharghi") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("fars") ||
+                        !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("khozestan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("ghom") ||
+                        !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("khorasan") || !isStudentHaveDorm(SecurityContext.getStudent()) && SecurityContext.getStudent().getCityOfUniversity().equals("alborz")) {
+                    LoanCategory loanCategory = new LoanCategory(2);
+                    loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                    validationLoan(loan);
+                    AppContext.getCreditCardService().updateBalanceById(26000000.0, bank1, SecurityContext.getStudent().getId());
+                    System.out.println("Your loan sucessfully added");
+                    if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 2) {
+
+
+                        Integer year = returnYear(SecurityContext.getStudent());
+                        createInstallment(26000000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
+                    }
+                } else {
+                    LoanCategory loanCategory = new LoanCategory(3);
+                    loan = new Loan(houseTrackCode, SecurityContext.getTodayDate(), loanCategory, SecurityContext.getStudent());
+                    validationLoan(loan);
+                    AppContext.getCreditCardService().updateBalanceById(19500000.0, bank1, SecurityContext.getStudent().getId());
+                    System.out.println("Your loan sucessfully added");
+                    if (AppContext.getLoanService().typeLoanCategoryByStudentIdOrderById(SecurityContext.getStudentId()) == 3) {
+
+
+                        Integer year = returnYear(SecurityContext.getStudent());
+                        createInstallment(19500000.0, SecurityContext.getStudent().getYearOfEntry().getYear() + year);
+                    }
                 }
             }
         }
     }
+
 
     private static StudentSpouse getSpouseInfo(Student student) {
         System.out.println("Enter  Your Spouse firstName: ");
